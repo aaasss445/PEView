@@ -3,12 +3,17 @@
 #include"PEStruct.h"
 
 IMAGE_DOS_HEADER idh;
+IMAGE_NT_HEADERS32 inh;
 
 // notepad.exe 경로
 // C:\\Windows\\notepad.exe
 
 void PrintPEView(FILE* fp, int FileSize, int Option); // 옵션에 따라 화면에 다르게 출력해주는 함수
 void IMAGE_DOS_HEADER_PRINT(FILE* fp); // 분석한걸 옵션으로 받았을때 IMAGE_DOS_HEADER 구조체를 출력해주는 함수
+void IMAGE_NT_HEADERS32_PRINT(FILE* fp);
+void DOS_HEADER_PRINT(FILE* fp);
+void ChangeEscapeSequence(CHAR* ch);
+//void PrintText(int* p);
 
 int main(int argc, int *argv[]) {
 	int FileSize; // 파일 크기
@@ -54,7 +59,7 @@ void PrintPEView(FILE* fp, int FileSize, int Option) {
 		char Value[16] = { -1, }; // 바이트를 문자로 출력하기위한 임시저장변수
 		char* buffer = (char*)malloc(sizeof(char) * FileSize); // 파일의 크기만큼 메모리 동적할당
 		fread(buffer, FileSize, 1, fp); // 파일 크기만큼 읽기
-		printf("test : %s", Value);
+		printf("%d\n", sizeof(IMAGE_NT_HEADERS32));
 		printf("pFile\t\tRaw Data\t\t\t\t\t\tValue\n");
 		printf("===============================================================\n");
 		for (int i = 0; i < FileSize; i++) {
@@ -67,7 +72,7 @@ void PrintPEView(FILE* fp, int FileSize, int Option) {
 			if (i % 16 == 15) { // 한줄이 다 채워지면
 				printf("\t");
 				for (int j = 0; j < 16; j++) { // 그 한줄의 문자들 출력
-					printf("%c", Value[j]);
+					ChangeEscapeSequence(&Value[j]);
 				}
 				printf("\n");
 			}
@@ -79,13 +84,20 @@ void PrintPEView(FILE* fp, int FileSize, int Option) {
 	}
 	// 분석한 걸 출력
 	if (Option == VIEWANALYSIS) {
+		//printf("%X\n", ftell(fp));
 		IMAGE_DOS_HEADER_PRINT(fp);
+		//printf("%X\n", ftell(fp));
+		DOS_HEADER_PRINT(fp);
+		//printf("%X\n", ftell(fp));
+		IMAGE_NT_HEADERS32_PRINT(fp);
+		//printf("%X\n", ftell(fp));
 	}
 
 }
 
 void IMAGE_DOS_HEADER_PRINT(FILE* fp) {
 	fread(&idh, sizeof(idh), 1, fp);
+	printf("+++IMAGE_DOS_HEADER+++\n");
 	printf("e_magic : %04X\n", idh.e_magic);
 	printf("e_cblp : %04X\n", idh.e_cblp);
 	printf("e_cp : %04X\n", idh.e_cp);
@@ -109,3 +121,115 @@ void IMAGE_DOS_HEADER_PRINT(FILE* fp) {
 	}
 	printf("e_lfanew : %08X\n", idh.e_lfanew);
 }
+
+void IMAGE_NT_HEADERS32_PRINT(FILE* fp) {
+	//printf("%d\n", sizeof(inh));
+	fseek(fp, idh.e_lfanew, SEEK_SET);
+	//printf("%X\n", ftell(fp));
+	fread(&inh, sizeof(inh), 1, fp);
+	printf("+++IMAGE_NT_HEADERS+++\n");
+	printf("Signature : %08X\n", inh.Signature);
+	printf("++++++IMAGE_FILE_HEADER+++++\n");
+	printf("Machine : %04X\n", inh.FileHeader.Machine);
+	printf("NumberOfSections : %04X\n", inh.FileHeader.NumberOfSections);
+	printf("TimeDateStamp : %08X\n", inh.FileHeader.TimeDateStamp);
+	printf("PointerToSymbolTable : %08X\n", inh.FileHeader.PointerToSymbolTable);
+	printf("NumberOfSymbols : %08X\n", inh.FileHeader.NumberOfSymbols);
+	printf("SizeOfOptionalHeader : %04X\n", inh.FileHeader.SizeOfOptionalHeader);
+	printf("Characteristics : %04X\n", inh.FileHeader.Characteristics);
+	printf("+++++IMAGE_OPTIONAL_HEADER32+++++\n");
+	printf("Magic : %04X\n", inh.OptionalHeader.Magic);
+	printf("MajorLinkerVersion : %02X\n", inh.OptionalHeader.MajorLinkerVersion);
+	printf("MinorLinkerVersion : %02X\n", inh.OptionalHeader.MinorLinkerVersion);
+	printf("SizeOfCode : %08X\n", inh.OptionalHeader.SizeOfCode);
+	printf("SizeOfInitializedData : %08X\n", inh.OptionalHeader.SizeOfInitializedData);
+	printf("SizeOfUninitializedData : %08X\n", inh.OptionalHeader.SizeOfUninitializedData);
+	printf("AddressOfEntryPoint : %08X\n", inh.OptionalHeader.AddressOfEntryPoint);
+	printf("BaseOfCode : %08X\n", inh.OptionalHeader.BaseOfCode);
+	printf("BaseOfData : %08X\n", inh.OptionalHeader.BaseOfData);
+	printf("ImageBase : %08X\n", inh.OptionalHeader.ImageBase);
+	printf("SectionAlignment : %08X\n", inh.OptionalHeader.SectionAlignment);
+	printf("FileAlignment : %08X\n", inh.OptionalHeader.FileAlignment);
+	printf("MajorOperatingSystemVersion : %04X\n", inh.OptionalHeader.MajorOperatingSystemVersion);
+	printf("MinorOperatingSystemVersion : %04X\n", inh.OptionalHeader.MinorOperatingSystemVersion);
+	printf("MajorImageVersion : %04X\n", inh.OptionalHeader.MajorImageVersion);
+	printf("MinorImageVersion : %04X\n", inh.OptionalHeader.MinorImageVersion);
+	printf("MajorSubsystemVersion : %04X\n", inh.OptionalHeader.MajorSubsystemVersion);
+	printf("MinorSubsystemVersion : %04X\n", inh.OptionalHeader.MinorSubsystemVersion);
+	printf("Win32VersionValue : %08X\n", inh.OptionalHeader.Win32VersionValue);
+	printf("SizeOfImage : %08X\n", inh.OptionalHeader.SizeOfImage);
+	printf("SizeOfHeaders : %08X\n", inh.OptionalHeader.SizeOfHeaders);
+	printf("CheckSum : %08X\n", inh.OptionalHeader.CheckSum);
+	printf("Subsystem : %04X\n", inh.OptionalHeader.Subsystem);
+	printf("DllCharacteristics : %04X\n", inh.OptionalHeader.DllCharacteristics);
+	printf("SizeOfStackReserve : %08X\n", inh.OptionalHeader.SizeOfStackReserve);
+	printf("SizeOfStackCommit : %08X\n", inh.OptionalHeader.SizeOfStackCommit);
+	printf("SizeOfHeapReserve : %08X\n", inh.OptionalHeader.SizeOfHeapReserve);
+	printf("SizeOfHeapCommit : %08X\n", inh.OptionalHeader.SizeOfHeapCommit);
+	printf("LoaderFlags : %08X\n", inh.OptionalHeader.LoaderFlags);
+	printf("NumberOfRvaAndSizes : %08X\n", inh.OptionalHeader.NumberOfRvaAndSizes);
+	for (int i = 0; i < IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++) {
+		printf("DataDirectory[%d] - VirtualAddress : %08X\n", i, inh.OptionalHeader.DataDirectory[i].VirtualAddress);
+		printf("DataDirectory[%d] - Size : %08X\n", i, inh.OptionalHeader.DataDirectory[i].Size);
+	}
+}
+
+void DOS_HEADER_PRINT(FILE* fp) {
+	int DOS_HEADER_SIZE = idh.e_lfanew - sizeof(IMAGE_DOS_HEADER);
+	char* DosHeaderBuffer = (char*)malloc(sizeof(char) * (DOS_HEADER_SIZE));
+	fread(DosHeaderBuffer, DOS_HEADER_SIZE, 1, fp);
+	printf("+++DOS_HEADER+++\n");
+	for (int i = 0; i < DOS_HEADER_SIZE; i++) {
+		if (i % 16 == 0) {
+			printf("%08x\t", sizeof(IMAGE_DOS_HEADER) + i);
+		}
+		ChangeEscapeSequence(&DosHeaderBuffer[i]);
+
+		if (i % 16 == 15) {
+			printf("\n");
+		}
+	}
+	printf("\n");
+	free(DosHeaderBuffer);
+}
+
+void ChangeEscapeSequence(CHAR *ch) {
+	if (*ch == 0x0A || *ch == 0x0D ||
+		*ch == 0x0 || *ch == 0x09 ||
+		ch == 0x0B || *ch== 0x07 ||
+		*ch == 0x08) {
+		printf(".");
+	}
+	else {
+		printf("%c", *ch);
+	}
+}
+
+//void PrintText(int* p) {
+//	int vsize = sizeof(*p);
+//	char* pname = name(*p);
+//	char* vname;
+//
+//	char* ptr = strtok(pname, ".");      
+//
+//	while (ptr != NULL)               
+//	{
+//		vname = ptr;		          
+//		ptr = strtok(NULL, ".");      
+//		if (ptr == NULL) {
+//			break;
+//		}
+//	}
+//
+//	switch (vsize) {
+//	case 1:
+//		printf("%s : %02X", vname, *p);
+//		break;
+//	case 2:
+//		printf("%s : %04X", vname, *p);
+//		break;
+//	case 4:
+//		printf("%s : %08X", vname, *p);
+//		break;
+//	}
+//}

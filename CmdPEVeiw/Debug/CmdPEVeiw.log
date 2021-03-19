@@ -1,9 +1,10 @@
 ﻿  PEView.c
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(20,7): warning C4013: 'exit'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(36,20): warning C4133: '함수': 'int *'과(와) 'const char *' 사이의 형식이 호환되지 않습니다.
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(39,25): warning C4133: '함수': 'int *'과(와) 'const char *' 사이의 형식이 호환되지 않습니다.
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(15,1): warning C4133: '초기화 중': 'int *'과(와) 'char *' 사이의 형식이 호환되지 않습니다.
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(23,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(55,31): warning C4013: 'malloc'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
-C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(79,7): warning C4013: 'free'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(25,7): warning C4013: 'exit'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(41,20): warning C4133: '함수': 'int *'과(와) 'const char *' 사이의 형식이 호환되지 않습니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(44,25): warning C4133: '함수': 'int *'과(와) 'const char *' 사이의 형식이 호환되지 않습니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(20,1): warning C4133: '초기화 중': 'int *'과(와) 'char *' 사이의 형식이 호환되지 않습니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(28,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(60,31): warning C4013: 'malloc'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(83,7): warning C4013: 'free'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\user\source\repos\CmdPEVeiw\CmdPEVeiw\PEView.c(199,14): warning C4047: '==': 'CHAR *'의 간접 참조 수준이 'int'과(와) 다릅니다.
   CmdPEVeiw.vcxproj -> C:\Users\user\source\repos\CmdPEVeiw\Debug\CmdPEVeiw.exe
